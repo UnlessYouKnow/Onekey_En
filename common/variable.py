@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def get_steam_path(config: dict) -> Path:
-    """获取Steam安装路径"""
+    """Get Steam installation path"""
     try:
         if custom_path := config.get("Custom_Steam_Path"):
             return Path(custom_path)
@@ -15,7 +15,7 @@ def get_steam_path(config: dict) -> Path:
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as key:
             return Path(winreg.QueryValueEx(key, "SteamPath")[0])
     except Exception as e:
-        print(f"Steam路径获取失败: {str(e)}")
+        print(f"Failed to get Steam path: {str(e)}")
         sys.exit(1)
 
 
@@ -24,7 +24,7 @@ DEFAULT_CONFIG = {
     "Custom_Steam_Path": "",
     "Debug_Mode": False,
     "Logging_Files": True,
-    "Help": "Github Personal Token可在GitHub设置的Developer settings中生成",
+    "Help": "GitHub Personal Token can be generated in Developer settings of GitHub settings",
 }
 
 
@@ -32,27 +32,27 @@ def generate_config() -> None:
     try:
         with open(Path("./config.json"), "w", encoding="utf-8") as f:
             f.write(json.dumps(DEFAULT_CONFIG, indent=2, ensure_ascii=False))
-        print("配置文件已生成")
+        print("Configuration file generated")
     except IOError as e:
-        print(f"配置文件创建失败: {str(e)}")
+        print(f"Failed to create config file: {str(e)}")
         sys.exit(1)
 
 
 def load_config() -> dict:
     if not Path("./config.json").exists():
         generate_config()
-        print("请填写配置文件后重新运行程序")
+        print("Please fill in the config file and restart the program")
         os.system("pause")
 
     try:
         with open(Path("./config.json"), "r", encoding="utf-8") as f:
             return json.loads(f.read())
     except json.JSONDecodeError:
-        print("配置文件损坏，正在重新生成...")
+        print("Config file corrupted, regenerating...")
         generate_config()
         sys.exit(1)
     except Exception as e:
-        print(f"配置加载失败: {str(e)}")
+        print(f"Failed to load config: {str(e)}")
         sys.exit(1)
 
 
